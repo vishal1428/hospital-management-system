@@ -1,2 +1,116 @@
-(venv) C:\Users\MSI\OneDrive\Desktop\Hospital_Management>where git
-INFO: Could not find files for the given pattern(s).
+{% extends 'partials/base.html' %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'); background-size: cover; background-position: center; min-height: 80vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center text-white">
+                <h1 class="display-4 fw-bold mb-4">Welcome to VCARE Hospital</h1>
+                <p class="lead mb-4">Providing world-class healthcare services with cutting-edge technology and compassionate care.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#services" class="btn btn-primary btn-lg">Our Services</a>
+                    <a href="{% url 'userauths:sign-up' %}" class="btn btn-outline-light btn-lg">Book Appointment</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="fw-bold">Our Medical Services</h2>
+                <p class="text-muted">Comprehensive healthcare solutions for you and your family</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for service in services %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if service.image %}
+                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-stethoscope fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ service.name }}</h5>
+                        <p class="card-text text-muted">{{ service.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">₹{{ service.cost }}</span>
+                            <a href="{% url 'base:service_detail' service.id %}" class="btn btn-outline-primary btn-sm">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No services available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="fw-bold">Why Choose VCARE?</h2>
+                <p class="text-muted">Experience healthcare excellence</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Expert Doctors</h5>
+                    <p class="text-muted">Experienced and qualified medical professionals</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">24/7 Care</h5>
+                    <p class="text-muted">Round-the-clock medical support and emergency care</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Safe & Secure</h5>
+                    <p class="text-muted">Your health and privacy are our top priorities</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Easy Booking</h5>
+                    <p class="text-muted">Book appointments online with just a few clicks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h3 class="fw-bold mb-3">Ready to Get Started?</h3>
+                <p class="lead mb-4">Book your appointment today and take the first step towards better health.</p>
+                <a href="{% url 'userauths:sign-up' %}" class="btn btn-light btn-lg">Book Appointment Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
