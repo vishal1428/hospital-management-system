@@ -13,10 +13,15 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
-from environs import Env
 
-env = Env()
-env.read_env()
+# Try to import environs, fallback to os.environ if not available
+try:
+    from environs import Env
+    env = Env()
+    env.read_env()
+except ImportError:
+    # Fallback for production environments
+    env = None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
