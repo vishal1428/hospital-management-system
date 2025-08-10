@@ -33,6 +33,8 @@
                                     
                                     {% for s in services %}
                                         <li><a class="dropdown-item" href="{% url 'base:service_detail' s.id %}">{{s.name}} </a></li>
+                                    {% empty %}
+                                        <li><a class="dropdown-item" href="#">No services available</a></li>
                                     {% endfor %}
                                         
                                 </ul>
