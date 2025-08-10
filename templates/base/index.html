@@ -1,116 +1,135 @@
-{% extends 'partials/base.html' %}
+{% extends 'partials/base.html' %} 
 {% block content %}
-
 <!-- Hero Section -->
-<section class="hero-section" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'); background-size: cover; background-position: center; min-height: 80vh; display: flex; align-items: center;">
+<section class="container-fluid py-5" style="background: linear-gradient(90deg, #e9ecef 60%, #fff 40%); min-height: 450px;">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center text-white">
-                <h1 class="display-4 fw-bold mb-4">Welcome to VCARE Hospital</h1>
-                <p class="lead mb-4">Providing world-class healthcare services with cutting-edge technology and compassionate care.</p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="#services" class="btn btn-primary btn-lg">Our Services</a>
-                    <a href="{% url 'userauths:sign-up' %}" class="btn btn-outline-light btn-lg">Book Appointment</a>
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3 text-dark">
+                    <span class="text-primary">Extraordinary</span> Care is Right Here With <span style="color: #ffd700;">You.</span>
+                </h1>
+                <p class="fs-4 mb-4 text-dark">Every patient is different, every smile is unique. We prioritize safety with health checks, contactless check-in, enhanced PPE, and more.</p>
+                <div class="d-flex gap-3">
+                    {# <a href="{% url 'register' %}" class="btn btn-primary btn-lg fw-bold">Create Account <i class="fas fa-user-plus ms-1"></i></a> #}
+                    <a href="#services" class="btn btn-outline-primary btn-lg fw-bold">Book Appointment <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://indiaeducationdiary.in/wp-content/uploads/2024/03/GettyImages-1217096099-3.jpg" class="img-fluid rounded shadow" style="height: 350px; object-fit: cover;" alt="Hospital" />
             </div>
         </div>
     </div>
 </section>
 
-<!-- Services Section -->
-<section id="services" class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center mb-5">
-                <h2 class="fw-bold">Our Medical Services</h2>
-                <p class="text-muted">Comprehensive healthcare solutions for you and your family</p>
+<!-- Our Services Section -->
+<section class="container mt-5" id="services">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Our Services</h2>
+        <p class="text-secondary">We offer a wide range of healthcare services to meet your needs.</p>
+    </div>
+    <div class="row">
+        {% for s in services %}
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <a href="{% url 'base:service_detail' s.id %}">
+                    <img src="{{s.image.url}}" alt="service" style="height: 180px; object-fit: cover" class="card-img-top rounded-top" />
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title text-dark fw-bold mb-2 text-truncate">{{s.name}}</h5>
+                    <p class="card-text text-secondary mb-2">{{s.description|truncatechars:40}}</p>
+                    <span class="badge bg-primary mb-2">Doctors: {{s.available_doctors.all.count}}</span>
+                    <div class="fw-bold fs-5 mb-2 text-dark">${{s.cost}}</div>
+                    <a href="{% url 'base:service_detail' s.id %}" class="btn btn-outline-primary btn-sm w-100">Book Appointment <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
             </div>
         </div>
-        
-        <div class="row">
-            {% for service in services %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    {% if service.image %}
-                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fas fa-stethoscope fa-3x text-muted"></i>
-                    </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">{{ service.name }}</h5>
-                        <p class="card-text text-muted">{{ service.description|truncatewords:20 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-primary fw-bold">₹{{ service.cost }}</span>
-                            <a href="{% url 'base:service_detail' service.id %}" class="btn btn-outline-primary btn-sm">Learn More</a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">What Our Patients Say</h2>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="card-text text-dark">"The doctors and staff were very caring and professional. I felt safe and well taken care of!"</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-2" width="40" height="40" alt="Patient">
+                        <div>
+                            <span class="fw-bold text-dark">Priya Sharma</span><br>
+                            <small class="text-secondary">Recovered Patient</small>
                         </div>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p class="text-muted">No services available at the moment.</p>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="card-text text-dark">"Booking appointments was so easy and the facilities are top-notch. Highly recommended!"</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-2" width="40" height="40" alt="Patient">
+                        <div>
+                            <span class="fw-bold text-dark">Rahul Verma</span><br>
+                            <small class="text-secondary">Regular Visitor</small>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- Features Section -->
-<section class="py-5 bg-light">
+<!-- Call to Action Section -->
+<section class="container-fluid py-5" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="fw-bold text-primary mb-3">Get Appointment Now!</h2>
+                <p class="text-secondary mb-4">Book your appointment with our expert doctors and experience world-class healthcare services.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="#services" class="btn btn-primary btn-lg fw-bold">Book Now <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="container-fluid py-5 mt-5" style="background: #052c65;">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 text-center mb-5">
-                <h2 class="fw-bold">Why Choose VCARE?</h2>
-                <p class="text-muted">Experience healthcare excellence</p>
+            <div class="col-md-4 mb-3 mb-md-0 text-center text-md-start">
+                <div class="mb-2">
+                    <i class="fas fa-hospital-alt fa-2x text-white"></i>
+                </div>
+                <h5 class="fw-bold mb-2 text-white">Hospital Management</h5>
+                <p class="small mb-0 text-white-50">Extraordinary care is right here with you. Your health, our priority.</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0 text-center">
+                <h6 class="fw-bold mb-2 text-white">Contact Us</h6>
+                <p class="mb-1 text-white"><i class="fas fa-phone-alt me-2"></i>+91 12345 67890</p>
+                <p class="mb-1 text-white"><i class="fas fa-envelope me-2"></i>info@hospital.com</p>
+                <p class="mb-0 text-white"><i class="fas fa-map-marker-alt me-2"></i>123 Main Street, City, India</p>
+            </div>
+            <div class="col-md-4 text-center text-md-end">
+                <h6 class="fw-bold mb-2 text-white">Follow Us</h6>
+                <a href="#" class="text-white me-3 fs-5"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white me-3 fs-5"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white me-3 fs-5"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white fs-5"><i class="fab fa-linkedin-in"></i></a>
             </div>
         </div>
-        
+        <hr class="border-light my-4">
         <div class="row">
-            <div class="col-lg-3 col-md-6 mb-4 text-center">
-                <div class="p-4">
-                    <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                    <h5 class="fw-bold">Expert Doctors</h5>
-                    <p class="text-muted">Experienced and qualified medical professionals</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4 text-center">
-                <div class="p-4">
-                    <i class="fas fa-clock fa-3x text-primary mb-3"></i>
-                    <h5 class="fw-bold">24/7 Care</h5>
-                    <p class="text-muted">Round-the-clock medical support and emergency care</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4 text-center">
-                <div class="p-4">
-                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                    <h5 class="fw-bold">Safe & Secure</h5>
-                    <p class="text-muted">Your health and privacy are our top priorities</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4 text-center">
-                <div class="p-4">
-                    <i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>
-                    <h5 class="fw-bold">Easy Booking</h5>
-                    <p class="text-muted">Book appointments online with just a few clicks</p>
-                </div>
+            <div class="col text-center">
+                <small class="text-white-50">&copy; {{year|default:"2024"}} Hospital Management. All rights reserved.</small>
             </div>
         </div>
     </div>
-</section>
-
-<!-- CTA Section -->
-<section class="py-5 bg-primary text-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h3 class="fw-bold mb-3">Ready to Get Started?</h3>
-                <p class="lead mb-4">Book your appointment today and take the first step towards better health.</p>
-                <a href="{% url 'userauths:sign-up' %}" class="btn btn-light btn-lg">Book Appointment Now</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-{% endblock %}
+</footer>
+{% endblock content %}

@@ -34,7 +34,7 @@ def index(request):
         return render(request, "base/index.html", context)
     except Exception as e:
         print(f"Template error: {e}")
-        return render(request, "base/index_simple.html", context)
+        return render(request, "base/index.html", context)
 
 def service_detail(request, service_id):
     service = base_models.Service.objects.get(id=service_id)
