@@ -7,12 +7,17 @@ echo "🚀 Starting build process..."
 echo "📦 Installing dependencies..."
 pip install -r requirements.txt
 
+# Run database migrations
+echo "🔄 Running database migrations..."
+python manage.py makemigrations
+python manage.py migrate
+
+# Set up initial data
+echo "📊 Setting up initial data..."
+python manage.py setup_initial_data
+
 # Collect static files
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput
-
-# Run migrations
-echo "🔄 Running migrations..."
-python manage.py migrate
 
 echo "✅ Build completed successfully!" 
