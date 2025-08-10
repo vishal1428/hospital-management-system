@@ -117,6 +117,17 @@ def book_appointment(request, service_id, doctor_id):
 @login_required
 def checkout(request, billing_id):
     billing = base_models.Billing.objects.get(billing_id=billing_id)
+    
+    if razorpay is None:
+        # Fallback for deployment without razorpay
+        context = {
+            "billing": billing,
+            "razorpay_key_id": "rzp_test_dummy",
+            "razorpay_order_id": "order_dummy",
+            "amount": int(billing.total * 100),
+        }
+        return render(request, "base/checkout.html", context)
+    
     client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
     payment = client.order.create({
