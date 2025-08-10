@@ -1,0 +1,1 @@
+web: gunicorn HMS_prj.wsgi --log-file - 

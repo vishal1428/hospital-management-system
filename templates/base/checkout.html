@@ -1,0 +1,143 @@
+{% extends 'partials/base.html' %}
+{% block content %}
+<section class="container">
+    <div class="row d-flex justify-content-center mt-3">
+        <div class="col-lg-6">
+            <div class="shadow p-3 rounded-3">
+                <h3 class="mb-4">Bio Data</h3>
+                <div class="row">
+                    <div class="col-lg-12 mb-3">
+                        <label class="mb-2">Full Name</label>
+                        <input type="text" value="{{ billing.patient.full_name }}" readonly class="form-control bg-light" />
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <label class="mb-2">Email</label>
+                        <input type="text" value="{{ billing.patient.email }}" readonly class="form-control bg-light" />
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <label class="mb-2">Mobile Number</label>
+                        <input type="text" value="{{ billing.patient.mobile }}" readonly class="form-control bg-light" />
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <label class="mb-2">Gender</label>
+                        <input type="text" value="{{ billing.patient.gender }}" readonly class="form-control bg-light" />
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <label class="mb-2">Date Of Birth</label>
+                        <input type="text" value="{{ billing.patient.dob }}" readonly class="form-control bg-light" />
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <label class="mb-2">Address</label>
+                        <input type="text" value="{{ billing.patient.address }}" readonly class="form-control bg-light" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="shadow p-3 rounded-3 mt-4">
+                <h3 class="mb-4">Doctor Description</h3>
+                <div class="d-flex">
+                    <div class="col-12 col-lg-5">
+                        <img class="img-fluid mt-4" style="width: 100%; height: 450px; object-fit: cover; border-radius: 10px" src="{{ billing.appointment.doctor.image.url }}" alt="" />
+                    </div>
+                    <div class="col-12 col-lg-7 p-4 rounded-3 bg-white">
+                        <h3 class="fw-bold mt-5">
+                            <b>{{ billing.appointment.doctor.full_name }}</b>
+                        </h3>
+                        <p class="fs-5 mt-4">{{ billing.appointment.doctor.bio|default:"" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="shadow p-3 rounded-3">
+                <div class="d-flex justify-content-between">
+                    <p class="fw-semibold fs-5">Sub-total</p>
+                    <p class="fs-5">₹{{ billing.sub_total }}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <p class="fw-bold fs-4">Total</p>
+                    <p class="fw-bold fs-4">₹{{ billing.total }}</p>
+                </div>
+
+                <div class="mt-4">
+                    <button type="button" id="rzp-button1" class="btn text-white w-100" style="background-color: #f37254;">
+                        Pay with Razorpay <i class="fas fa-credit-card ms-2"></i>
+                    </button>
+                    <p>Order ID: {{ razorpay_order_id }}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Razorpay Script -->
+{% comment %} <script src="https://checkout.razorpay.com/v1/checkout.js"></script> {% endcomment %}
+{% comment %} <script>
+    var options = {
+        "key": "{{ razorpay_key_id }}", // from context
+        "amount": "{{ amount }}",       // in paisa (e.g., 118000 for ₹1180)
+        "currency": "INR",
+        "name": "Dcare Inc.",
+        "description": "Hospital Appointment",
+        "order_id": "{{ razorpay_order_id }}",  // order_id from context
+        "handler": function (response){
+            alert("Payment successful. Razorpay Payment ID: " + response.razorpay_payment_id);
+            // optionally send payment info to backend using AJAX here
+        },
+        "prefill": {
+            "name": "{{ billing.patient.user.first_name }}",
+            "email": "{{ billing.patient.user.email }}",
+            "contact": "{{ billing.patient.phone }}"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+</script> {% endcomment %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<form id="razorpay-form" action="{% url 'base:razorpay_payment_verify' %}" method="POST">
+  {% csrf_token %}
+  <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+  <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+  <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+  <input type="hidden" name="billing_id" value="{{ billing.billing_id }}">
+</form>
+
+<script>
+  var options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ amount }}",
+    "currency": "INR",
+    "name": "VCARE INC.",
+    "order_id": "{{ razorpay_order_id }}",
+    "handler": function (response){
+        document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+        document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+        document.getElementById('razorpay_signature').value = response.razorpay_signature;
+        document.getElementById('razorpay-form').submit();  // Submit to razorpay_payment_verify
+    },
+    "prefill": {
+        "email": "{{ billing.patient.email }}",
+        "contact": "{{ billing.patient.mobile }}"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+  };
+  var rzp1 = new Razorpay(options);
+  document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+
+{% endblock content %}

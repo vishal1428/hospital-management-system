@@ -1,0 +1,130 @@
+{% extends 'partials/base.html' %} {% block content %}
+<section class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-12 col-lg-5">
+            {% if doctor.image %}
+                <img class="img-fluid mt-4" style="width: 100%; height: 550px; object-fit: cover; border-radius: 10px" src="{{doctor.image.url}}" alt="" />
+            {% else %}
+                <img class="img-fluid mt-4" style="width: 100%; height: 550px; object-fit: cover; border-radius: 10px" src="https://via.placeholder.com/500x550/007bff/ffffff?text={{doctor.full_name|urlencode}}" alt="" />
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-lg-7 p-4 rounded-3 bg-white">
+            <h1 class="display-4 fw-bold mt-5">
+                <span class=""><b>{{doctor.full_name}}</b></span>
+            </h1>
+            <p class="fs-4 mt-4">{{doctor.bio|default:""}}</p>
+        </div>
+    </div>
+</section>
+
+<section class="container">
+    <div class="">
+        <h2 class="">Book Appointment</h2>
+    </div>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <form class="row" method="POST">
+        {% csrf_token %}
+        <div class="col-lg-12 mb-3">
+            <label for="name" class="mb-2">Full Name</label>
+            <input type="text" value="{{patient.full_name}}" name="full_name" class="form-control" placeholder="John Doe" />
+        </div>
+        <div class="col-lg-6 mb-3">
+            <label for="name" class="mb-2">Email</label>
+            <input type="text" value="{{patient.email}}" name="email" class="form-control" placeholder="johndoe@gmail.com" />
+        </div>
+        <div class="col-lg-6 mb-3">
+            <label for="name" class="mb-2">Mobile Number</label>
+            <input type="text" value="{{patient.mobile}}" name="mobile" class="form-control" placeholder="+123 (456) 7890" />
+        </div>
+        <div class="col-lg-6 mb-3">
+            <label for="name" class="mb-2">Gender</label>
+            <select name="gender" id="" class="form-select pb-4">
+                <option  {% if patient.gender == "Male" %} selected {% endif %}value="Male">Male</option>
+                <option {% if patient.gender == "Female" %} selected {% endif %} value="Female">Female</option>
+            </select>
+        </div>
+        <div class="col-lg-6 mb-3">
+            <label for="dob" class="mb-2">Date of Birth <span class="text-danger">*</span></label>
+            <input type="date" value="{{patient.dob}}" name="dob" id="dob" class="form-control" required />
+        </div>
+        <div class="col-lg-12 mb-3">
+            <label for="name" class="mb-2">Address</label>
+            <input type="text" value="{{patient.address}}" name="address" class="form-control" placeholder="123 Main Street" />
+        </div>
+        <div class="col-lg-12 mb-3">
+            <label for="issues" class="mb-2">Issues <span class="text-danger">*</span></label>
+            <textarea name="issues" class="form-control" id="issues" required placeholder="Please describe your health issues..."></textarea>
+        </div>
+
+        <div class="col-lg-12 mb-3">
+            <label for="symptoms" class="mb-2">Symptoms <span class="text-danger">*</span></label>
+            <textarea name="symptoms" class="form-control" id="symptoms" required placeholder="Please describe your symptoms..."></textarea>
+        </div>
+        <div class="col-lg-12 mb-3">
+            <button type="submit" class="btn btn-primary w-100">Continue <i class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+    </form>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const dobInput = document.getElementById('dob');
+    const issuesInput = document.getElementById('issues');
+    const symptomsInput = document.getElementById('symptoms');
+    
+    form.addEventListener('submit', function(e) {
+        let hasErrors = false;
+        
+        // Clear previous error styling
+        [dobInput, issuesInput, symptomsInput].forEach(input => {
+            input.classList.remove('is-invalid');
+        });
+        
+        // Validate Date of Birth
+        if (!dobInput.value.trim()) {
+            dobInput.classList.add('is-invalid');
+            hasErrors = true;
+        }
+        
+        // Validate Issues
+        if (!issuesInput.value.trim()) {
+            issuesInput.classList.add('is-invalid');
+            hasErrors = true;
+        }
+        
+        // Validate Symptoms
+        if (!symptomsInput.value.trim()) {
+            symptomsInput.classList.add('is-invalid');
+            hasErrors = true;
+        }
+        
+        if (hasErrors) {
+            e.preventDefault();
+            alert('Please fill in all required fields marked with *');
+        }
+    });
+    
+    // Remove error styling when user starts typing
+    [dobInput, issuesInput, symptomsInput].forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+});
+</script>
+{% endblock content %}

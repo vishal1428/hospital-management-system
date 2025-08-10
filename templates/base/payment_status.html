@@ -1,0 +1,38 @@
+{% extends 'partials/base.html' %} {% block content %}
+<section class="container">
+    <div class="container">
+        {% if payment_status == "paid" %}
+
+        <div class="d-flex justify-content-center flex-column align-items-center mb-5">
+            <i class="fas fa-check-circle text-success display-1"></i>
+            <h1>Appointment Scheduled Successfully</h1>
+            <p class="text-success">Thanks for booking an appointment <i class="fas fa-check-circle"></i></p>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'patient:dashboard' %}" class="btn btn-success d-flex align-items-center">My Dashboard <i class="bi bi-grid-fill ms-2"></i></a>
+            {% else %}
+                <a href="{% url 'userauths:sign-in' %}" class="btn btn-primary d-flex align-items-center">Sign In <i class="fas fa-sign-in-alt ms-2"></i></a>
+            {% endif %}
+        </div>
+        {% endif %} 
+        
+        {% if payment_status == "failed" %}
+
+        <div class="d-flex justify-content-center flex-column align-items-center mb-5">
+            <i class="fas fa-exclamation-triangle fa-flip text-danger display-1"></i>
+            <h1>Appointment Scheduling Failed</h1>
+            <p>We couldn't process your payment, please try again later. Thank you</p>
+            <a href="{% url 'base:index' %}" class="btn btn-primary">Back to Home</a>
+        </div>
+        {% endif %}
+        
+        {% if not payment_status %}
+        <div class="d-flex justify-content-center flex-column align-items-center mb-5">
+            <i class="fas fa-question-circle text-warning display-1"></i>
+            <h1>Payment Status Unknown</h1>
+            <p>Unable to determine payment status. Please contact support if you have any questions.</p>
+            <a href="{% url 'base:index' %}" class="btn btn-primary">Back to Home</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,65 @@
+{% extends 'partials/base.html' %} {% block content %}
+<section class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-12 col-lg-7 p-4 rounded-3 bg-white">
+            <h1 class="display-4 fw-bold mt-5">
+                <span class="text-primary"><b>{{service.name}}</b></span>
+            </h1>
+            <p class="fs-4 mt-4">{{service.description}}</p>
+           
+        </div>
+        <div class="col-12 col-lg-5">
+            {% if service.image %}
+                <img class="img-fluid mt-4" style="width: 100%; height: 350px; object-fit: cover; border-radius: 10px" src="{{service.image.url}}" alt="" />
+            {% else %}
+                <img class="img-fluid mt-4" style="width: 100%; height: 350px; object-fit: cover; border-radius: 10px" src="https://via.placeholder.com/500x350/007bff/ffffff?text={{service.name|urlencode}}" alt="" />
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="container mt-5">
+    <div class="mb-4">
+        <h2 class="fw-bold">Available Doctors</h2>
+        <p class="text-muted">Choose from our experienced healthcare professionals</p>
+    </div>
+    
+    <div class="row">
+        {% for d in service.available_doctors.all %}
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 col-sm-3 col-4 mb-3 mb-md-0">
+                                {% if d.image %}
+                                    <img src="{{d.image.url}}" alt="Doctor" style="width: 80px; height: 80px; object-fit: cover; border-radius: 10px;" class="img-fluid" />
+                                {% else %}
+                                    <img src="https://via.placeholder.com/80x80/007bff/ffffff?text=Dr" alt="Doctor" style="width: 80px; height: 80px; object-fit: cover; border-radius: 10px;" class="img-fluid" />
+                                {% endif %}
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-8 mb-3 mb-md-0">
+                                <h5 class="fw-bold mb-2">{{d.full_name}}</h5>
+                                <div class="row">
+                                    <div class="col-sm-6 mb-2">
+                                        <small class="text-muted fw-semibold">Available Date:</small>
+                                        <p class="mb-0">{{d.next_available_appointment_date}}</p>
+                                    </div>
+                                    <div class="col-sm-6 mb-2">
+                                        <small class="text-muted fw-semibold">Service Cost:</small>
+                                        <p class="mb-0 fw-bold text-primary">₹{{service.cost}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-12 text-md-end text-center">
+                                <a href="{% url 'base:book_appointment' service.id d.id %}" class="btn btn-primary">
+                                    Book Appointment <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock content %}
