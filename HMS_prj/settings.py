@@ -161,16 +161,22 @@ MESSAGE_TAGS = {
 # DEFAULT_FROM_EMAIL="vishalnandi14@gmail.com"
 # SERVER_EMAIL="vishalnandi14@gmail.com"
 
-ANYMAIL = {
-    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_SENDER_DOMAIN"),  # e.g., sandbox12345.mailgun.org
-}
-
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-DEFAULT_FROM_EMAIL = f"Mailgun Sandbox <postmaster@{env('MAILGUN_SENDER_DOMAIN')}>"
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+# Email configuration - make it optional for deployment
+try:
+    ANYMAIL = {
+        "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
+        "MAILGUN_SENDER_DOMAIN": env("MAILGUN_SENDER_DOMAIN"),
+    }
+    EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+    DEFAULT_FROM_EMAIL = f"Mailgun Sandbox <postmaster@{env('MAILGUN_SENDER_DOMAIN')}>"
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+except:
+    # Fallback to console email backend for deployment
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    DEFAULT_FROM_EMAIL = 'noreply@example.com'
+    SERVER_EMAIL = 'noreply@example.com'
 
 # Bootstrap Configs
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -182,8 +188,13 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # PAYPAL_CLIENT_ID= env("PAYPAL_CLIENT_ID")
 # PAYPAL_SECRET_ID= env("PAYPAL_SECRET_ID")
 
-RAZORPAY_KEY_ID = env("RAZORPAY_KEY_ID")
-RAZORPAY_KEY_SECRET = env("RAZORPAY_KEY_SECRET")
+# Payment configuration - make it optional for deployment
+try:
+    RAZORPAY_KEY_ID = env("RAZORPAY_KEY_ID")
+    RAZORPAY_KEY_SECRET = env("RAZORPAY_KEY_SECRET")
+except:
+    RAZORPAY_KEY_ID = "rzp_test_dummy"
+    RAZORPAY_KEY_SECRET = "dummy_secret"
 
 
 
