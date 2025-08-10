@@ -21,11 +21,20 @@ from doctor import models as doctor_models
 from patient import models as patient_models
 
 def index(request):
-    services = base_models.Service.objects.all()
+    try:
+        services = base_models.Service.objects.all()
+    except Exception as e:
+        print(f"Database error: {e}")
+        services = []
+    
     context = {
         "services": services
     }
-    return render(request, "base/index.html", context)
+    try:
+        return render(request, "base/index.html", context)
+    except Exception as e:
+        print(f"Template error: {e}")
+        return render(request, "base/index_simple.html", context)
 
 def service_detail(request, service_id):
     service = base_models.Service.objects.get(id=service_id)
